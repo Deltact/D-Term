@@ -276,7 +276,7 @@ def Process(arg):
         elif arg == 'quit':
             return 0
         else:
-            print(color('r', 200, 0, 0, 'Failed to recognize command. Did you specify the arguements properly?'))
+            print(color('r', 200, 0, 0, 'Failed to recognize command. Did you specify the arguments properly?'))
 
 ## Console Code vvv
 
