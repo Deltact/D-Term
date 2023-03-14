@@ -133,9 +133,11 @@ def Process(arg):
     elif 'print' in arg.lower() or 'echo' in arg.lower():
         if 'print ' in arg.lower():
             arg = arg.replace('print ', '', 1)
+	    arg = arg.replace('\\n', '\n')
             print(arg)
         elif 'echo ' in arg.lower():
             arg = arg.replace('echo ', '', 1)
+            arg = arg.replace('\\n', '\n')
             print(arg)
     elif 'title' in arg.lower():
         if 'settitle ' in arg.lower():
