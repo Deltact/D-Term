@@ -275,10 +275,10 @@ def Process(arg):
             sys.exit()
         elif arg == 'quit':
             return 0
+        elif 'rundtm' in arg:
+            print(color('r', 200, 0, 0, 'RunDTM is still in the works. Please check later!'))
         else:
             print(color('r', 200, 0, 0, 'Failed to recognize command. Did you specify the arguments properly?'))
-	elif 'rundtm ' in arg:
-		print(color('r', 200, 0, 0, 'RunDTM is still in the works. Please check later!'))
 
 ## Console Code vvv
 
