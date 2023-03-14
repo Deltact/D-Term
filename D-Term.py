@@ -125,6 +125,7 @@ def Process(arg):
                 seconds += digit
             try:
                 seconds = float(seconds)
+                message = message.replace('\\n', '\n')
                 return slowPrint(message, seconds)
             except:
                 print(color('r',200,0,0,"Failed to convert [Milliseconds] into float."), 'Are you sure you typed numbers?')          
@@ -133,7 +134,7 @@ def Process(arg):
     elif 'print' in arg.lower() or 'echo' in arg.lower():
         if 'print ' in arg.lower():
             arg = arg.replace('print ', '', 1)
-	    arg = arg.replace('\\n', '\n')
+            arg = arg.replace('\\n', '\n')
             print(arg)
         elif 'echo ' in arg.lower():
             arg = arg.replace('echo ', '', 1)
