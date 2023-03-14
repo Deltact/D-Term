@@ -1,12 +1,10 @@
+import platform, os, sys, time
+
 print('Initialising D-Term...')
 Header = '>>>'
 version = 'D-Term (Build 2)'
-Mode = 0
-
-import platform
-import os
-import sys
-import time
+Plat, Ver = platform.system(), platform.release()
+Mode = 'term'
 
 # Advanced Functionality
 def clearConsole():
@@ -18,13 +16,13 @@ def clearConsole():
     os.system(command)
 
 def color(ansi, r, g, b, text): # Text Colorizer 
-    if platform.system() == 'Windows':
-        if int(platform.release()) >= 8:
+    if Plat == 'Windows':
+        if int(Ver) >= 8:
             return "\033[38;2;{};{};{}m{}\033[38;2;255;255;255m\033[0m".format(r, g, b, text)
         else:
             return text
-    elif platform.system() == 'Android' or platform.system() == 'Linux':
-        if ansi == '0':
+    else:
+        if ansi == 0:
             pass
         elif ansi == 'b':
             return f"\033[30m{text}\033[0m"
@@ -57,7 +55,7 @@ def color(ansi, r, g, b, text): # Text Colorizer
         elif ansi == 'wb':
             return f"\033[37;1m{text}\033[0m"
 
-# Cursor Madness
+# Cursor Madness, WINDOWS ONLY!
 import ctypes
 
 class _CursorInfo(ctypes.Structure):
@@ -78,25 +76,18 @@ def show_cursor():
     ci.visible = True
     ctypes.windll.kernel32.SetConsoleCursorInfo(handle, ctypes.byref(ci))
 
-# Logic Function
-
+# Logic Functions / D-Term Commands
 def slowPrint(str, TypeSpeed):
 	for char in str + '\n':
 		sys.stdout.write(char)
 		sys.stdout.flush()
 		time.sleep(TypeSpeed / 1000)
 
-def RunCode(Path):
-    if '.dtm' not in Path:
-        print(color('r', 200, 0, 0, 'Failed to run file, not a D-Term Batch File.'))
-        return 3
-    else:
-        return 2
-
+# Command Handler
 def Process(arg):
     if 'alias ' in arg:
         arg = arg.lower()
-        arg = arg.replace('alias ', '')
+        arg = arg.replace('alias ', '', 1)
         if 'help' == arg or 'cmd' in arg:
             print("Help, CMDs, CMD")
         elif 'term' in arg:
@@ -107,40 +98,14 @@ def Process(arg):
             print("ShowCursor, ShowCur")
         elif 'hidecur' in arg:
             print("HideCursor, HideCur")
-        elif 'slowprint' == arg:
-            print("No Aliases")
         elif 'clr' in arg:
             print("Clear, Clr")
-        elif 'reset' == arg:
-            print("No Aliases")
         elif 'title' in arg:
             print("SetTitle, Title")
-        elif 'quit' == arg:
-            print("No Aliases")
         elif 'alias' == arg:
             print(color('rb', 220, 70, 70, "Really now?"))
-        elif 'man' == arg:
-            print("No Aliases")
-        elif 'mode' == arg:
-            print("No Aliases")
-        elif 'run' in arg:
-            print("RunDTM, Run")
         else:
-            print(color('r', 200, 0, 0, 'Failed to recognize module.'))
-    elif 'print' in arg.lower() or 'echo' in arg.lower():
-        if 'print ' in arg.lower():
-            arg = arg.replace('print ', '')
-            print(arg)
-        elif 'echo ' in arg.lower():
-            arg = arg.replace('echo ', '')
-            print(arg)
-    elif 'title' in arg.lower():
-        if 'settitle ' in arg.lower():
-            arg = arg.replace('settitle ', '')
-            os.system("title " + arg)
-        else:
-            arg = arg.replace('title ', '')
-            os.system("title " + arg)
+            print('No alliases for that module.')
     elif 'slowprint /s ' in arg:
         if len(arg) > 15:
             counter = 0
@@ -165,6 +130,18 @@ def Process(arg):
                 print(color('r',200,0,0,"Failed to convert [Milliseconds] into float."), 'Are you sure you typed numbers?')          
         else:
             print(color('r',200,0,0,"Failed to run SlowPrint command."),'\n\nSlowPrint Usage:\n---\nslowprint /s [string] /t [seconds per character]')
+    elif 'print' in arg.lower() or 'echo' in arg.lower():
+        if 'print ' in arg.lower():
+            arg = arg.replace('print ', '', 1)
+            print(arg)
+        elif 'echo ' in arg.lower():
+            arg = arg.replace('echo ', '', 1)
+            print(arg)
+    elif 'title' in arg.lower():
+        if 'settitle ' in arg.lower():
+            os.system("title " + arg[8::])
+        else:
+            os.system("title " + arg[5::])
     else:
         arg = arg.lower()
         if 'help' in arg or arg == 'cmds' or arg == 'cmd':
@@ -211,7 +188,6 @@ def Process(arg):
                 print("SlowPrint /s [String] /t [Milliseconds]   Slowprints you your own message letter by letter at [seconds] intervals.")
                 print("Alias [module: 'print']                   Shows aliases of certain commands if applicable.")
                 print("Mode [Arg]                                Changes the terminal mode.")
-                print("RunDTM [Path]                             Runs a D-Term Batch File (.dtm)")
                 print("ShowCursor                                Shows your terminal cursor.")
                 print("HideCursor                                Hides your terminal cursor.")
                 print("Clear                                     Clears the terminal.")
@@ -255,10 +231,6 @@ def Process(arg):
                 clearConsole()
                 os.system("title " + f"Native Terminal - File Browsing Mode | {version}")
                 Header = f"{os.getcwd()}>"
-            elif 'run' in arg:
-                clearConsole()
-                os.system("title " + f"Native Terminal - Executable Mode | {version}")
-                RunCode()
             elif 'term' in arg:
                 clearConsole()
                 os.system("title " + f"Native Terminal - D-Term Mode | {version}")
@@ -275,8 +247,6 @@ def Process(arg):
             sys.exit()
         elif arg == 'quit':
             return 0
-        elif 'rundtm' in arg:
-            print(color('r', 200, 0, 0, 'RunDTM is still in the works. Please check later!'))
         else:
             print(color('r', 200, 0, 0, 'Failed to recognize command. Did you specify the arguments properly?'))
 
